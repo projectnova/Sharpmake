@@ -6,8 +6,9 @@
 
 for arg in "$@"
 do
-     index=$(echo $arg | cut -f1 -d=)
-     val=$(echo $arg | cut -f2 -d=)
+     echo "ARG is " $arg
+     index=$(echo $arg | cut -f1 -d "=")
+     val=$(echo $arg | cut -f2 -d "=")
      
      case $index in
 	 --main) SHARPMAKE_MAIN=$val;;
@@ -15,11 +16,17 @@ do
      esac
 done
 
+echo "SHARPMAKE_MAIN is " $SHARPMAKE_MAIN
+
 # workaround for https://github.com/mono/mono/issues/6752
 TERM=xterm
 
+# working directory
+SCRIPT_FILE=$(readlink -f "$0")
+SCRIPT_DIR=$(dirname "$SCRIPT_FILE")
+
 # relative to script location Sharpmake/util
-SHARPMAKE_EXECUTABLE=../bin/Release/Sharpmake.Application.exe
+SHARPMAKE_EXECUTABLE=$SCRIPT_DIR/../bin/Release/Sharpmake.Application.exe
 
 #
 # RESULT DEFINITIONS
@@ -41,15 +48,6 @@ error () {
 
 # fail immediately if anything goes wrong
 set -e
-
-# directory permissions
-OLD_DIR=$(pwd)
-cd $(dirname $0) > /dev/null
-CURRENT_DIR=$(pwd)
-cd $OLD_DIR
-
-echo "OLD_DIR is "$OLD_DIR
-echo "CURRENT_DIR is "$CURRENT_DIR
 
 # mono
 which mono > /dev/null

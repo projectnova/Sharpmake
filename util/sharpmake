@@ -1,0 +1,71 @@
+#!/bin/sh
+
+#
+# ARGUMENTS AND ENVIRONMENT
+#
+
+for arg in "$@"
+do
+     index=$(echo $arg | cut -f1 -d=)
+     val=$(echo $arg | cut -f2 -d=)
+     
+     case $index in
+	 --main) SHARPMAKE_MAIN=$val;;
+	 *)
+     esac
+done
+
+# workaround for https://github.com/mono/mono/issues/6752
+TERM=xterm
+
+# relative to script location Sharpmake/util
+SHARPMAKE_EXECUTABLE=../bin/Release/Sharpmake.Application.exe
+
+#
+# RESULT DEFINITIONS
+#
+
+success () {
+    echo "Generation succeeded!"
+    exit 0
+}
+
+error () {
+    echo "Generation failed!"
+    exit 1
+}
+
+#
+# ENVIRONMENT TESTS
+#
+
+# fail immediately if anything goes wrong
+set -e
+
+# directory permissions
+OLD_DIR=$(pwd)
+cd $(dirname $0) > /dev/null
+CURRENT_DIR=$(pwd)
+cd $OLD_DIR
+
+echo "OLD_DIR is "$OLD_DIR
+echo "CURRENT_DIR is "$CURRENT_DIR
+
+# mono
+which mono > /dev/null
+MONO_FOUND=$?
+if [ $MONO_FOUND -ne 0 ]; then
+    echo "Mono not found!"
+    error
+fi
+
+#
+# GENERATE
+#
+
+echo "Generating..."
+SM_CMD="mono \"${SHARPMAKE_EXECUTABLE}\" \"/sources(\\\"${SHARPMAKE_MAIN}\\\")\" /verbose"
+echo $SM_CMD
+eval $SM_CMD || error
+
+success

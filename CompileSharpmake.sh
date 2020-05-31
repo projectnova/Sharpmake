@@ -5,7 +5,7 @@
 # $3: Platform(Normally should be "Any CPU" for sln and AnyCPU for a csproj)
 # if none are passed, defaults to building Sharpmake.sln in Debug|Any CPU
 
-function BuildSharpmake {
+BuildSharpmake () {
     solutionPath=$1
     configuration=$2
     platform=$3
@@ -22,9 +22,10 @@ function BuildSharpmake {
 # fail immediately if anything goes wrong
 set -e
 
-pushd $(dirname $0) > /dev/null
+OLD_DIR=$(pwd)
+cd $(dirname $0) > /dev/null
 CURRENT_DIR=$(pwd)
-popd > /dev/null
+cd $OLD_DIR
 
 which msbuild > /dev/null
 MSBUILD_FOUND=$?

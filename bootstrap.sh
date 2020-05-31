@@ -1,11 +1,11 @@
 #!/bin/sh
 
-function success {
+success () {
 	echo Bootstrap succeeded \!
 	exit 0
 }
 
-function error {
+error () {
 	echo Bootstrap failed \!
 	exit 1
 }
@@ -13,9 +13,10 @@ function error {
 # fail immediately if anything goes wrong
 set -e
 
-pushd $(dirname $0) > /dev/null
+OLD_DIR=$(pwd)
+cd $(dirname $0) > /dev/null
 CURRENT_DIR=$(pwd)
-popd > /dev/null
+cd $OLD_DIR
 
 which msbuild > /dev/null
 MSBUILD_FOUND=$?

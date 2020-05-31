@@ -28,9 +28,11 @@ fi
 # workaround for https://github.com/mono/mono/issues/6752
 TERM=xterm
 
-SHARPMAKE_EXECUTABLE=$CURRENT_DIR/bin/debug/Sharpmake.Application.exe
+BOOTSTRAP_CONFIG=Debug
 
-$CURRENT_DIR/CompileSharpmake.sh Sharpmake.Application/Sharpmake.Application.csproj Debug AnyCPU
+SHARPMAKE_EXECUTABLE=$CURRENT_DIR/bin/$BOOTSTRAP_CONFIG/Sharpmake.Application.exe
+
+$CURRENT_DIR/CompileSharpmake.sh Sharpmake.Application/Sharpmake.Application.csproj $BOOTSTRAP_CONFIG AnyCPU
 if [ $? -ne 0 ]; then
     echo "The build has failed."
     if [ -f $SHARPMAKE_EXECUTABLE ]; then
